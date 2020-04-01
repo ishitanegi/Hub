@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "100145020792",
+    "firebase_url": "https://hubapp-3acff.firebaseio.com",
+    "project_id": "hubapp-3acff",
+    "storage_bucket": "hubapp-3acff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100145020792:android:92dbb0b33788bdbe97d28d",
+        "android_client_info": {
+          "package_name": "com.example.hub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100145020792-6mej9fa1l9bu9qi2ur51ef9qt4123jr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgey0jxSzy7MS3cQccjAlvhbFKWFMDcd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100145020792-6mej9fa1l9bu9qi2ur51ef9qt4123jr9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
