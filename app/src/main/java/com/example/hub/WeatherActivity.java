@@ -46,7 +46,7 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
-    TextView txtCity, txtWind, txtDescription, txtHumidity, txtPressure,txtSunset,txtSunrise, txtCelsius;
+    TextView txtCity, txtWind, txtDescription,txtLastUpdated, txtHumidity, txtPressure,txtSunset,txtSunrise, txtCelsius;
     EditText editCity;
     FloatingActionButton btnSearch;
 
@@ -73,6 +73,7 @@ public class WeatherActivity extends AppCompatActivity {
         txtHumidity = (TextView) findViewById(R.id.txtHumidity);
         txtSunrise = (TextView) findViewById(R.id.txtSunrise);
         txtSunset = (TextView) findViewById(R.id.txtSunset);
+        txtLastUpdated = (TextView) findViewById(R.id.txtLastUpdated);
         txtWind = (TextView) findViewById(R.id.txtWind);
         txtCelsius = (TextView) findViewById(R.id.txtCelsius);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -120,6 +121,8 @@ public class WeatherActivity extends AppCompatActivity {
                         JSONObject sys=json.getJSONObject("sys");
                         String sunrise=unixTimeStampToDateTime(sys.getLong("sunrise"));
                         String sunset=unixTimeStampToDateTime(sys.getLong("sunset"));
+                        String lastUpdated=unixTimeStampToDateTime(json.getLong("dt"));
+
 
                         setText(txtCity,city.toUpperCase());
                         setText(txtPressure,"Pressure: "+pressure+" hPa");
@@ -127,6 +130,7 @@ public class WeatherActivity extends AppCompatActivity {
                         setText(txtWind,"Wind: "+speed+" m/s");
                         setText(txtSunrise,"Sunrise: "+sunrise);
                         setText(txtSunset,"Sunset: "+sunset);
+                        setText(txtLastUpdated,"Last Updated: "+lastUpdated);
 
 
 
