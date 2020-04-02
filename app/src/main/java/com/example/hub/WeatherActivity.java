@@ -32,7 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,11 +46,17 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
-    TextView txtCity, txtLastUpdate, txtDescription, txtHumidity, txtTime, txtCelsius;
+    TextView txtCity, txtWind, txtDescription, txtHumidity, txtPressure,txtSunset,txtSunrise, txtCelsius;
     EditText editCity;
     FloatingActionButton btnSearch;
 
     ImageView imageView;
+    public static String unixTimeStampToDateTime(double unixTimeStamp){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date date = new Date();
+        date.setTime((long)unixTimeStamp*1000);
+        return dateFormat.format(date);
+    }
 
 
 
@@ -59,10 +68,12 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
 
         txtCity = (TextView) findViewById(R.id.txtCity);
-        //txtLastUpdate = (TextView) findViewById(R.id.txtLastUpdate);
+        txtPressure = (TextView) findViewById(R.id.txtPressure);
         txtDescription = (TextView) findViewById(R.id.txtDescription);
-        //txtHumidity = (TextView) findViewById(R.id.txtHumidity);
-        //txtTime = (TextView) findViewById(R.id.txtTime);
+        txtHumidity = (TextView) findViewById(R.id.txtHumidity);
+        txtSunrise = (TextView) findViewById(R.id.txtSunrise);
+        txtSunset = (TextView) findViewById(R.id.txtSunset);
+        txtWind = (TextView) findViewById(R.id.txtWind);
         txtCelsius = (TextView) findViewById(R.id.txtCelsius);
         imageView = (ImageView) findViewById(R.id.imageView);
         editCity = (EditText) findViewById(R.id.editCity);
@@ -102,12 +113,26 @@ public class WeatherActivity extends AppCompatActivity {
                         String icon=object.getString("icon");
                         JSONObject temp=json.getJSONObject("main");
                         Double temperature=temp.getDouble("temp");
+                        Double pressure=temp.getDouble("pressure");
+                        Double humidity=temp.getDouble("humidity");
+                        JSONObject wind=json.getJSONObject("wind");
+                        Double speed=wind.getDouble("speed");
+                        JSONObject sys=json.getJSONObject("sys");
+                        String sunrise=unixTimeStampToDateTime(sys.getLong("sunrise"));
+                        String sunset=unixTimeStampToDateTime(sys.getLong("sunset"));
 
-                        setText(txtCity,city);
+                        setText(txtCity,city.toUpperCase());
+                        setText(txtPressure,"Pressure: "+pressure+" hPa");
+                        setText(txtHumidity,"Humidity: "+humidity+" %");
+                        setText(txtWind,"Wind: "+speed+" m/s");
+                        setText(txtSunrise,"Sunrise: "+sunrise);
+                        setText(txtSunset,"Sunset: "+sunset);
+
+
 
                         String temps=Math.round(temperature)+" °C";
                         setText(txtCelsius,temps);
-                        setText(txtDescription,description);
+                        setText(txtDescription,description.substring(0, 1).toUpperCase() + description.substring(1));
                         setImage(imageView,icon);
 
 
