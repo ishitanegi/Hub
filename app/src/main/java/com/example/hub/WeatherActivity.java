@@ -24,13 +24,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.hub.Common.Common;
-import com.example.hub.Helper.Helper;
-import com.example.hub.Model.OpenWeatherMap;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,17 +45,12 @@ public class WeatherActivity extends AppCompatActivity {
 
     TextView txtCity, txtLastUpdate, txtDescription, txtHumidity, txtTime, txtCelsius;
     EditText editCity;
-    Button btnSearch;
+    FloatingActionButton btnSearch;
 
     ImageView imageView;
 
 
-    LocationManager locationManager;
-    String provider;
-    static double lat, lng;
-    OpenWeatherMap openWeatherMap = new OpenWeatherMap();
 
-    int MY_PERMISSION = 0;
 
 
     @Override
@@ -69,14 +59,14 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
 
         txtCity = (TextView) findViewById(R.id.txtCity);
-        txtLastUpdate = (TextView) findViewById(R.id.txtLastUpdate);
+        //txtLastUpdate = (TextView) findViewById(R.id.txtLastUpdate);
         txtDescription = (TextView) findViewById(R.id.txtDescription);
-        txtHumidity = (TextView) findViewById(R.id.txtHumidity);
-        txtTime = (TextView) findViewById(R.id.txtTime);
+        //txtHumidity = (TextView) findViewById(R.id.txtHumidity);
+        //txtTime = (TextView) findViewById(R.id.txtTime);
         txtCelsius = (TextView) findViewById(R.id.txtCelsius);
         imageView = (ImageView) findViewById(R.id.imageView);
         editCity = (EditText) findViewById(R.id.editCity);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
+       btnSearch = (FloatingActionButton) findViewById(R.id.btnSearch);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
