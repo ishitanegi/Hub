@@ -14,7 +14,7 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnLogout;
     FirebaseAuth mFirebaseAuth;
-    ImageView ivweather;
+    ImageView ivweather,ivTextRecognition;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
@@ -33,10 +33,17 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         ivweather= findViewById(R.id.weather);
+        ivTextRecognition= findViewById(R.id.imageTextRecognition);
         ivweather.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeActivity.this,WeatherActivity.class));
+            }
+        });
+        ivTextRecognition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this,TextRecognitionActivity.class));
             }
         });
 
