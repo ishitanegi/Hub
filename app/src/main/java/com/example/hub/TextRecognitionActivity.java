@@ -75,6 +75,7 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
     private Button mTextButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static int PERMISSION_CODE = 1000;
+    private  int cameraMode = 0;
 
     private Bitmap mSelectedImage;
     private GraphicOverlay mGraphicOverlay;
@@ -99,9 +100,9 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
      * Dimensions of inputs.
      */
     private static final int DIM_BATCH_SIZE = 1;
-    private static final int DIM_PIXEL_SIZE = 10;
-    private static final int DIM_IMG_SIZE_X = 1000;
-    private static final int DIM_IMG_SIZE_Y = 1000;
+    private static final int DIM_PIXEL_SIZE = 3;
+    private static final int DIM_IMG_SIZE_X = 224;
+    private static final int DIM_IMG_SIZE_Y = 224;
     /**
      * Labels corresponding to the output of the vision model.
      */
@@ -136,18 +137,20 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         mTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cameraMode=0;
                 runTextRecognition(mSelectedImage);
             }
         });
         mCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TAG", "in camera 1");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                         String permission[] = {Manifest.permission.CAMERA};
                         requestPermissions(permission, REQUEST_IMAGE_CAPTURE);
                     } else {
+                        cameraMode=1;
+
                         dispatchTakePictureIntent();
                     }
                 } else {
@@ -160,8 +163,7 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         });
 
         Spinner dropdown = findViewById(R.id.spinner);
-        String[] items = new String[]{"Test Image 1 (Text)", "Test Image 2 (Text)", "Test Image 3" +
-                " (Face)"/*, "Test Image 4 (Object)", "Test Image 5 (Object)"*/};
+        String[] items = new String[]{"Test Image 1", "Test Image 2 ", "Test Image 3"/*, "Test Image 4 (Object)", "Test Image 5 (Object)"*/};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout
                 .simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
@@ -176,7 +178,9 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             setImage(imageBitmap);
             //mImageView.setImageBitmap(imageBitmap);
+
             runTextRecognition(imageBitmap);
+
         }
     }
 
@@ -217,6 +221,8 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
         if (blocks.size() == 0) {
             showToast("No Text Found");
+            mGraphicOverlay.clear();
+            mEditView.setText("");
             return;
         }
         mGraphicOverlay.clear();
@@ -227,14 +233,19 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
             for (int j = 0; j < lines.size(); j++) {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
                 text += (lines.get(j).getText()) + '\n';
+                if(cameraMode==0) {
 
-                for (int k = 0; k < elements.size(); k++) {
-                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
-                    mGraphicOverlay.add(textGraphic);
+                    for (int k = 0; k < elements.size(); k++) {
+                        Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
+                        mGraphicOverlay.add(textGraphic);
+                    }
                 }
             }
         }
         mEditView.setText(text);
+        if(cameraMode==1){
+        mTextButton.setEnabled(false);
+        }
 
 
     }
@@ -377,10 +388,14 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         return new Pair<>(targetWidth, targetHeight);
     }
 
+
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+        Log.e("tag","onItemSelect");
+        mTextButton.setEnabled(true);
         mGraphicOverlay.clear();
         mEditView.setText("");
         mImageView.setImageBitmap(null);
+        cameraMode=0;
         switch (position) {
             case 0:
                 mSelectedImage = getBitmapFromAsset(this, "Please_walk_on_the_grass.jpg");
@@ -432,6 +447,7 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
     public void onNothingSelected(AdapterView<?> parent) {
         // Do nothing
     }
+
 
     public static Bitmap getBitmapFromAsset(Context context, String filePath) {
         AssetManager assetManager = context.getAssets();
