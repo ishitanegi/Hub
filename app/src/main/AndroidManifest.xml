@@ -19,10 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+<!--        flower recognition-->
         <activity
             android:name=".classification.ClassifierActivity"
-            android:label="@string/tfe_ic_app_name" android:theme="@style/AppTheme.ImageClassification"></activity>
+            android:label="@string/tfe_ic_app_name"
+            android:theme="@style/AppTheme.ImageClassification"></activity>
         <activity android:name=".TextRecognitionActivity" />
+        <activity
+            android:name=".detection.DetectorActivity"
+            android:label="@string/tfe_od_app_name"
+            android:theme="@style/AppTheme.ImageClassification"></activity>
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

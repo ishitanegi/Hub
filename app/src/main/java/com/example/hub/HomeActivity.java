@@ -9,12 +9,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.hub.classification.ClassifierActivity;
+import com.example.hub.detection.DetectorActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
     Button btnLogout;
     ImageView ivFlower;
+    ImageView ivObject;
+
     FirebaseAuth mFirebaseAuth;
     ImageView ivweather,ivTextRecognition;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -24,6 +27,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        ivObject=findViewById(R.id.ivObject);
+        ivObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, DetectorActivity.class));
+
+            }
+        });
         ivFlower=findViewById(R.id.ivFlower);
         ivFlower.setOnClickListener(new View.OnClickListener() {
             @Override
