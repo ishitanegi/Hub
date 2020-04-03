@@ -21,9 +21,8 @@
         android:id="@+id/weather"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/weather" />
@@ -32,11 +31,22 @@
         android:id="@+id/imageTextRecognition"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/text"
         app:layout_constraintStart_toEndOf="@+id/weather"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/town" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivFlower"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/flower"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toEndOf="@+id/imageTextRecognition"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
