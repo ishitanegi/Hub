@@ -1,7 +1,10 @@
 package com.example.hub;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,12 +14,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -64,8 +70,11 @@ import java.util.PriorityQueue;
 public class TextRecognitionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "MainActivity";
     private ImageView mImageView;
+    private ImageButton mCamera;
     private TextView mEditView;
     private Button mTextButton;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static int PERMISSION_CODE = 1000;
 
     private Bitmap mSelectedImage;
     private GraphicOverlay mGraphicOverlay;
@@ -90,9 +99,9 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
      * Dimensions of inputs.
      */
     private static final int DIM_BATCH_SIZE = 1;
-    private static final int DIM_PIXEL_SIZE = 3;
-    private static final int DIM_IMG_SIZE_X = 224;
-    private static final int DIM_IMG_SIZE_Y = 224;
+    private static final int DIM_PIXEL_SIZE = 10;
+    private static final int DIM_IMG_SIZE_X = 1000;
+    private static final int DIM_IMG_SIZE_Y = 1000;
     /**
      * Labels corresponding to the output of the vision model.
      */
@@ -116,7 +125,9 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_recognition);
 
+
         mImageView = findViewById(R.id.image_view);
+        mCamera = findViewById(R.id.ivCamera);
 
         mTextButton = findViewById(R.id.button_text);
         mEditView = findViewById(R.id.txt);
@@ -125,13 +136,32 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         mTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                runTextRecognition();
+                runTextRecognition(mSelectedImage);
+            }
+        });
+        mCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("TAG", "in camera 1");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                        String permission[] = {Manifest.permission.CAMERA};
+                        requestPermissions(permission, REQUEST_IMAGE_CAPTURE);
+                    } else {
+                        dispatchTakePictureIntent();
+                    }
+                } else {
+                    showToast("Can't acquire necessary permission");
+
+                }
+
+
             }
         });
 
         Spinner dropdown = findViewById(R.id.spinner);
-        String[] items = new String[]{"Test Image 1 (Text)", "Test Image 2 (Text)"/*, "Test Image 3" +
-                " (Face)", "Test Image 4 (Object)", "Test Image 5 (Object)"*/};
+        String[] items = new String[]{"Test Image 1 (Text)", "Test Image 2 (Text)", "Test Image 3" +
+                " (Face)"/*, "Test Image 4 (Object)", "Test Image 5 (Object)"*/};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout
                 .simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
@@ -139,10 +169,30 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         initCustomModel();
     }
 
-    private void runTextRecognition() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            setImage(imageBitmap);
+            //mImageView.setImageBitmap(imageBitmap);
+            runTextRecognition(imageBitmap);
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+        Log.e("TAG", "in camera");
+    }
+
+
+    private void runTextRecognition(Bitmap mSelectedImage) {
         // Replace with code from the codelab to run text recognition.
-        FirebaseVisionImage image=FirebaseVisionImage.fromBitmap(mSelectedImage);
-        FirebaseVisionTextRecognizer detector =FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mSelectedImage);
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
         mTextButton.setEnabled(false);
         detector.processImage(image)
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
@@ -164,22 +214,22 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
 
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         // Replace with code from the codelab to process the text recognition result.
-        List<FirebaseVisionText.TextBlock> blocks=texts.getTextBlocks();
-        if(blocks.size()==0){
+        List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+        if (blocks.size() == 0) {
             showToast("No Text Found");
             return;
         }
         mGraphicOverlay.clear();
 
-        String text="";
-        for (int i=0;i<blocks.size();i++){
-            List<FirebaseVisionText.Line> lines=blocks.get(i).getLines();
-            for(int j=0;j<lines.size();j++){
-                List<FirebaseVisionText.Element> elements=lines.get(j).getElements();
-                text+=(lines.get(j).getText())+'\n';
+        String text = "";
+        for (int i = 0; i < blocks.size(); i++) {
+            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++) {
+                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
+                text += (lines.get(j).getText()) + '\n';
 
-                for(int k=0;k<elements.size();k++){
-                    Graphic textGraphic= new TextGraphic(mGraphicOverlay,elements.get(k));
+                for (int k = 0; k < elements.size(); k++) {
+                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
                     mGraphicOverlay.add(textGraphic);
                 }
             }
@@ -330,6 +380,7 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         mGraphicOverlay.clear();
         mEditView.setText("");
+        mImageView.setImageBitmap(null);
         switch (position) {
             case 0:
                 mSelectedImage = getBitmapFromAsset(this, "Please_walk_on_the_grass.jpg");
@@ -338,10 +389,10 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
                 // Whatever you want to happen when the thrid item gets selected
                 mSelectedImage = getBitmapFromAsset(this, "nl2.jpg");
                 break;
-//            case 2:
-//                // Whatever you want to happen when the thrid item gets selected
-//                mSelectedImage = getBitmapFromAsset(this, "grace_hopper.jpg");
-//                break;
+            case 2:
+                // Whatever you want to happen when the thrid item gets selected
+                mSelectedImage = getBitmapFromAsset(this, "download.jpg");
+                break;
 //            case 3:
 //                // Whatever you want to happen when the thrid item gets selected
 //                mSelectedImage = getBitmapFromAsset(this, "tennis.jpg");
@@ -353,27 +404,28 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         }
         if (mSelectedImage != null) {
             // Get the dimensions of the View
-            Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
-
-            int targetWidth = targetedSize.first;
-            int maxHeight = targetedSize.second;
-
-            // Determine how much to scale down the image
-            float scaleFactor =
-                    Math.max(
-                            (float) mSelectedImage.getWidth() / (float) targetWidth,
-                            (float) mSelectedImage.getHeight() / (float) maxHeight);
-
-            Bitmap resizedBitmap =
-                    Bitmap.createScaledBitmap(
-                            mSelectedImage,
-                            (int) (mSelectedImage.getWidth() / scaleFactor),
-                            (int) (mSelectedImage.getHeight() / scaleFactor),
-                            true);
-
-            mImageView.setImageBitmap(resizedBitmap);
-            mSelectedImage = resizedBitmap;
+//            Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
+//
+//            int targetWidth = targetedSize.first;
+//            int maxHeight = targetedSize.second;
+//
+//            // Determine how much to scale down the image
+//            float scaleFactor =
+//                    Math.max(
+//                            (float) mSelectedImage.getWidth() / (float) targetWidth,
+//                            (float) mSelectedImage.getHeight() / (float) maxHeight);
+//
+//            Bitmap resizedBitmap =
+//                    Bitmap.createScaledBitmap(
+//                            mSelectedImage,
+//                            (int) (mSelectedImage.getWidth() / scaleFactor),
+//                            (int) (mSelectedImage.getHeight() / scaleFactor),
+//                            true);
+//
+//            mImageView.setImageBitmap(resizedBitmap);
+            mSelectedImage = setImage(mSelectedImage);
         }
+
     }
 
     @Override
@@ -394,5 +446,28 @@ public class TextRecognitionActivity extends AppCompatActivity implements Adapte
         }
 
         return bitmap;
+    }
+
+    private Bitmap setImage(Bitmap mSelectedImage) {
+        Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
+
+        int targetWidth = targetedSize.first;
+        int maxHeight = targetedSize.second;
+
+        // Determine how much to scale down the image
+        float scaleFactor =
+                Math.max(
+                        (float) mSelectedImage.getWidth() / (float) targetWidth,
+                        (float) mSelectedImage.getHeight() / (float) maxHeight);
+
+        Bitmap resizedBitmap =
+                Bitmap.createScaledBitmap(
+                        mSelectedImage,
+                        (int) (mSelectedImage.getWidth() / scaleFactor),
+                        (int) (mSelectedImage.getHeight() / scaleFactor),
+                        true);
+
+        mImageView.setImageBitmap(resizedBitmap);
+        return resizedBitmap;
     }
 }
