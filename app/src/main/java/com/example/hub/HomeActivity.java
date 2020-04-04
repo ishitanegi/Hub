@@ -19,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
     ImageView ivFlower;
     ImageView ivObject;
     ImageView ivPose;
+    ImageView ivMessage;
 
     FirebaseAuth mFirebaseAuth;
     ImageView ivweather,ivTextRecognition;
@@ -28,6 +29,15 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ivMessage=findViewById(R.id.ivMessage);
+        ivMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, com.example.hub.friendlychat.MainActivity.class));
+
+            }
+        });
 
         ivPose=findViewById(R.id.ivPose);
         ivPose.setOnClickListener(new View.OnClickListener() {

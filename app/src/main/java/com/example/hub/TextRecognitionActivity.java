@@ -39,7 +39,7 @@ import com.google.firebase.ml.custom.FirebaseModelInputOutputOptions;
 import com.google.firebase.ml.custom.FirebaseModelInputs;
 import com.google.firebase.ml.custom.FirebaseModelInterpreter;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
-import com.google.firebase.ml.custom.FirebaseModelOptions;
+//import com.google.firebase.ml.custom.FirebaseModelOptions;
 import com.google.firebase.ml.custom.FirebaseModelOutputs;
 import com.google.firebase.ml.common.modeldownload.FirebaseRemoteModel;
 import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel;

@@ -69,6 +69,23 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:25.1.1')
+
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
+
+    // Firebase UI
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    // Google
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+
+
+
 }
 repositories {
     mavenCentral()

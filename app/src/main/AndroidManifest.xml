@@ -32,6 +32,9 @@
         <activity
             android:name=".posenet.CameraActivity"
             android:theme="@style/AppTheme.ImageClassification"></activity>
+        <activity
+            android:name=".friendlychat.MainActivity"
+            android:theme="@style/AppTheme.ImageClassification"></activity>
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
