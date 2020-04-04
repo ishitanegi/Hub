@@ -29,6 +29,9 @@
             android:name=".detection.DetectorActivity"
             android:label="@string/tfe_od_app_name"
             android:theme="@style/AppTheme.ImageClassification"></activity>
+        <activity
+            android:name=".posenet.CameraActivity"
+            android:theme="@style/AppTheme.ImageClassification"></activity>
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

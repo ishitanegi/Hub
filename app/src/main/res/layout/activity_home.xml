@@ -23,6 +23,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="108dp"
+        android:contentDescription="weather"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/weather" />
@@ -33,6 +34,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="108dp"
+        android:contentDescription="Text Recognition"
         android:src="@drawable/text"
         app:layout_constraintStart_toEndOf="@+id/weather"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +45,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="108dp"
+        android:contentDescription="Flower Recognition"
         android:src="@drawable/flower"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.293"
@@ -55,8 +58,20 @@
         android:layout_height="80dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="80dp"
+        android:contentDescription="Object Detection"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weather"
         app:srcCompat="@drawable/object" />
+
+    <ImageView
+        android:id="@+id/ivPose"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="80dp"
+        android:contentDescription="Pose Detection"
+        app:layout_constraintStart_toEndOf="@+id/ivObject"
+        app:layout_constraintTop_toBottomOf="@+id/imageTextRecognition"
+        app:srcCompat="@drawable/pose" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

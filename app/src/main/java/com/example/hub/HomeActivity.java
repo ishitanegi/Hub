@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.example.hub.classification.ClassifierActivity;
 import com.example.hub.detection.DetectorActivity;
+import com.example.hub.posenet.CameraActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
@@ -17,6 +18,7 @@ public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
     ImageView ivFlower;
     ImageView ivObject;
+    ImageView ivPose;
 
     FirebaseAuth mFirebaseAuth;
     ImageView ivweather,ivTextRecognition;
@@ -26,6 +28,15 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ivPose=findViewById(R.id.ivPose);
+        ivPose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, CameraActivity.class));
+
+            }
+        });
 
         ivObject=findViewById(R.id.ivObject);
         ivObject.setOnClickListener(new View.OnClickListener() {
